@@ -22,7 +22,7 @@ jobs:
               id: dependency-cache
               with:
                 path: deps.tgz
-                key: dependency-cache-${{ hashFiles('cache-list.txt') }}
+                key: dependency-cache-${{ hashFiles('cache-list.txt', '.github/workflows/make_deps.yml') }}
             - name: Install deps
               if: steps.dependency-cache.outputs.cache-hit == 'true'
               run: |
@@ -36,9 +36,9 @@ jobs:
                 pandoc --version
             - name: Check Pandoc
               run: |
-               brew link pandoc
-               which pandoc
-               pandoc --version
+                brew link pandoc
+                which pandoc
+                pandoc --version
             - name: Setup PDFtk
               if: steps.dependency-cache.outputs.cache-hit != 'true'
               run: |
@@ -49,8 +49,8 @@ jobs:
                 pdftk --version
             - name: Check PDFtk
               run: |
-               echo $PATH
-               which pdftk
+                echo $PATH
+                which pdftk
             - name: Setup Kindle
               if: steps.dependency-cache.outputs.cache-hit != 'true'
               run: |
@@ -68,8 +68,8 @@ jobs:
                 curl -O -L --silent http://mirror.ctan.org/systems/mac/mactex/MacTeX.pkg
                 sudo installer -pkg MacTeX.pkg -target /
                 perl -le 'print join "\n", glob(shift)' '/usr/local/texlive/*/bin/universal-darwin' >> $GITHUB_PATH
-                rm -rf /usr/local/texlive/*/texmf-dist/doc
-                rm -rf /usr/local/texlive/*/texmf-dist/fonts
+                sudo rm -rf /usr/local/texlive/*/texmf-dist/doc
+                sudo rm -rf /usr/local/texlive/*/texmf-dist/fonts
             - name: Check LaTeX
               run: |
                 echo $PATH
