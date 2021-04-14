@@ -1,0 +1,56 @@
+name: Test cache
+
+on:
+    push:
+    pull_request:
+
+jobs:
+    make_books:
+        runs-on: macOS-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Platform check
+              run: |
+                uname -a
+                echo $SHELL
+                bash --version
+                ls -l /
+                ls -l /opt
+                echo /opt/pdflabs/pdftk/bin >> $GITHUB_PATH
+            - name: Dependencies cache check
+              uses: actions/cache@v2.1.4
+              id: dependency-cache
+              with:
+                path: deps.tgz
+                key: dependency-cache-v4
+            - name: Install deps
+              if: steps.dependency-cache.outputs.cache-hit == 'true'
+              run: |
+                sudo tar -vxzf deps.tgz
+            - name: Setup Pandoc
+              if: steps.dependency-cache.outputs.cache-hit != 'true'
+              run: |
+                brew install pandoc
+                which pandoc
+                pandoc --version
+            - name: Check Pandoc
+              run: |
+               brew link pandoc
+               which pandoc
+               pandoc --version
+            - name: Setup PDFtk
+              if: steps.dependency-cache.outputs.cache-hit != 'true'
+              run: |
+                curl -O -L --silent https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk_server-2.02-mac_osx-10.11-setup.pkg
+                sudo mkdir -p /usr/local/pdftk
+                sudo installer -pkg pdftk_server-2.02-mac_osx-10.11-setup.pkg -target /
+                which pdftk
+                pdftk --version
+            - name: Check PDFtk
+              run: |
+               echo $PATH
+               which pdftk
+            - name: Make tarball
+              if: steps.dependency-cache.outputs.cache-hit != 'true'
+              run: |
+                tar -cvzf deps.tgz -C -T cache-list.txt
