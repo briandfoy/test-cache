@@ -1,4 +1,4 @@
 /usr/local/Cellar/pandoc
 /opt/pdflabs
-/Applications/Kindle\ Previewer\ 3.app
+/Applications/Kindle Previewer 3.app
 /usr/local/bin/kindlepreviewer
