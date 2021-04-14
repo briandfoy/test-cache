@@ -51,7 +51,7 @@ jobs:
                echo $PATH
                which pdftk
             - name: Setup Kindle
-              if: steps.kindle-cache.outputs.cache-hit != 'true'
+              if: steps.dependency-cache.outputs.cache-hit != 'true'
               run: |
                 curl -O --silent https://s3.amazonaws.com/kindlepreviewer3/KindlePreviewerInstaller.pkg
                 sudo installer -pkg KindlePreviewerInstaller.pkg -target /
@@ -61,7 +61,16 @@ jobs:
                echo $PATH
                which kindlepreviewer
                kindlepreviewer --version
-               ls /Applications
+            - name: Setup LaTeX
+              if: steps.dependency-cache.outputs.cache-hit != 'true'
+              run: |
+                curl -O -L --silent http://mirror.ctan.org/systems/mac/mactex/MacTeX.pkg
+                sudo installer -pkg MacTeX.pkg -target /
+                perl -le 'print join "\n", glob(shift)' '/usr/local/texlive/*/bin/universal-darwin' >> $GITHUB_PATH
+            - name: Check LaTeX
+              run: |
+                echo $PATH
+                lualatex --version
             - name: Make tarball
               if: steps.dependency-cache.outputs.cache-hit != 'true'
               run: |
