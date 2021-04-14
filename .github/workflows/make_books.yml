@@ -61,6 +61,7 @@ jobs:
                echo $PATH
                which kindlepreviewer
                kindlepreviewer --version
+               ls /Applications
             - name: Make tarball
               if: steps.dependency-cache.outputs.cache-hit != 'true'
               run: |
