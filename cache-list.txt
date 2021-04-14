@@ -1,3 +1,2 @@
 /usr/local/Cellar/pandoc
-/Users/runner/.local/share/pandoc
 /opt/pdflabs
