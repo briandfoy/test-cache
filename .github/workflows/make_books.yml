@@ -53,4 +53,4 @@ jobs:
             - name: Make tarball
               if: steps.dependency-cache.outputs.cache-hit != 'true'
               run: |
-                tar -cvzf deps.tgz -C -T cache-list.txt
+                tar -cvzf deps.tgz -C / -T cache-list.txt
