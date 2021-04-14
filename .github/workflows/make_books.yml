@@ -22,7 +22,7 @@ jobs:
               id: dependency-cache
               with:
                 path: deps.tgz
-                key: dependency-cache-v4
+                key: dependency-cache-${{ hashFiles('cache-list.txt') }}
             - name: Install deps
               if: steps.dependency-cache.outputs.cache-hit == 'true'
               run: |
@@ -50,6 +50,17 @@ jobs:
               run: |
                echo $PATH
                which pdftk
+            - name: Setup Kindle
+              if: steps.kindle-cache.outputs.cache-hit != 'true'
+              run: |
+                curl -O --silent https://s3.amazonaws.com/kindlepreviewer3/KindlePreviewerInstaller.pkg
+                sudo installer -pkg KindlePreviewerInstaller.pkg -target /
+                which kindlepreviewer
+            - name: Check Kindle
+              run: |
+               echo $PATH
+               which kindlepreviewer
+               kindlepreviewer --version
             - name: Make tarball
               if: steps.dependency-cache.outputs.cache-hit != 'true'
               run: |
