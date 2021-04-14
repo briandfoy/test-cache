@@ -27,6 +27,7 @@ jobs:
               if: steps.dependency-cache.outputs.cache-hit == 'true'
               run: |
                 sudo tar -C / -vxzf deps.tgz
+                perl -le 'print join "\n", glob(shift)' '/usr/local/texlive/*/bin/universal-darwin' >> $GITHUB_PATH
             - name: Setup Pandoc
               if: steps.dependency-cache.outputs.cache-hit != 'true'
               run: |
